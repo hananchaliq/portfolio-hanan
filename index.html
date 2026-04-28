@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+      <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+      <title>Hanan NRC</title>
+      <style>
+         body {
+            margin: 0;
+            background: #000;
+            cursor: none;
+         }
+
+         /* GRID */
+         .grid-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+
+            background-image: linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+
+            background-size: 70px 70px;
+         }
+
+         /* CAHAYA BESAR NYEBAR */
+         .light {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+
+            --x: 50%;
+            --y: 50%;
+
+            background: radial-gradient(circle 500px at var(--x) var(--y), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1), transparent 70%);
+
+            filter: blur(80px);
+         }
+         /* ===== Scrollbar custom dark theme ===== */
+         ::-webkit-scrollbar {
+            width: 8px;
+         }
+
+         ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+         }
+
+         ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 999px;
+            border: 2px solid rgba(0, 0, 0, 0.4);
+         }
+
+         ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+         }
+
+         /* Firefox */
+         * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.4);
+         }
+         * {
+            cursor: none !important;
+            font-family: "IBM Plex Sans", sans-serif;
+            scroll-behavior: smooth;
+         }
+
+         @keyframes idlePulse {
+            0%,
+            100% {
+               transform: translate(-50%, -50%) scaleY(1);
+               opacity: 0.8;
+            }
+            50% {
+               transform: translate(-50%, -50%) scaleY(1.3);
+               opacity: 1;
+            }
+         }
+
+         .ripple {
+            position: relative;
+            overflow: hidden;
+         }
+
+         .ripple span {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple 0.5s linear;
+         }
+
+         @keyframes ripple {
+            to {
+               transform: scale(4);
+               opacity: 0;
+            }
+         }
+
+         .cursor-line {
+            z-index: 9999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 40px;
+            background: white;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: height 0.2s ease;
+            mix-blend-mode: difference;
+            isolation: isolate;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            animation: idlePulse 1.8s ease-in-out infinite;
+         }
+
+         /* titik kecil di tengah */
+         .cursor-line::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: white;
+            transform: translate(-50%, -50%);
+         }
+         .cursor-line::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0.2;
+            animation: glitch 2.5s infinite;
+         }
+
+         @keyframes glitch {
+            0%,
+            100% {
+               transform: translateY(0);
+            }
+            20% {
+               transform: translateY(-1px);
+            }
+            40% {
+               transform: translateY(1px);
+            }
+            60% {
+               transform: translateY(-0.5px);
+            }
+            80% {
+               transform: translateY(0.5px);
+            }
+         }
+
+         .fade-top {
+            opacity: 0;
+            transform: translateY(-50px);
+         }
+
+         .fade-top.show {
+            opacity: 1;
+            transform: translateX(0);
+         }
+
+         .fade-bot {
+            opacity: 0;
+            transform: translateY(50px);
+         }
+
+         .fade-bot.show {
+            opacity: 1;
+            transform: translateX(0);
+         }
+
+         .fade-right {
+            opacity: 0;
+            transform: translateX(50px);
+         }
+
+         .fade-right.show {
+            opacity: 1;
+            transform: translateX(0);
+         }
+
+         .fade-left {
+            opacity: 0;
+            transform: translateX(-50px);
+         }
+
+         .fade-left.show {
+            opacity: 1;
+            transform: translateX(0);
+         }
+
+         .bento-card {
+            @apply bg-zinc-900/50 border border-white/10 rounded-[2rem] p-8 backdrop-blur-md hover:border-blue-500/50 transition-all duration-500;
+         }
+         .glass-input {
+            @apply w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-all;
+         } /* Scrollbar Custom (Dashboard Style) */
+         .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+         }
+         .custom-scrollbar::-webkit-scrollbar-track {
+            background: #09090b;
+         }
+         .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 10px;
+         }
+
+         /* Animasi Masuk (Sama dengan saat pertama kali load) */
+         .project-entrance {
+            animation: entranceEffect 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+         }
+
+         @keyframes entranceEffect {
+            from {
+               opacity: 0;
+               transform: translateY(20px);
+               filter: blur(10px);
+            }
+            to {
+               opacity: 1;
+               transform: translateY(0);
+               filter: blur(0);
+            }
+         }
+
+         /* Animasi halu untuk list kanan */
+         .list-entrance {
+            animation: listEffect 0.5s ease-out forwards;
+         }
+
+         @keyframes listEffect {
+            from {
+               opacity: 0;
+               transform: translateX(10px);
+            }
+            to {
+               opacity: 1;
+               transform: translateX(0);
+            }
+         }
+      </style>
+   </head>
+   <body class="bg-zinc-950 text-white h-[200vh]">
+      <div class="cursor-line"></div>
+      <div class="grid-bg"></div>
+      <div class="light"></div>
+      <div class="navigasi">
+         <nav class="fade-left duration-1500 hidden sm:flex fixed left-4 top-1/2 -translate-y-1/2 z-50 flex-col items-center gap-3 p-2 bg-black/50 backdrop-blur-sm border border-white/10 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-16">
+            <a href="#awal" class="group relative flex items-center justify-center w-12 h-12 text-white hover:bg-white/10 rounded-full transition-all duration-300">
+               <i class="fa-solid fa-house text-xl"></i>
+               <div class="absolute left-20 px-4 py-2 bg-black/90 border border-white/10 text-white text-sm font-semibold rounded-lg whitespace-nowrap opacity-0 -translate-x-3 invisible group-hover:opacity-100 group-hover:translate-x-0 group-hover:visible transition-all duration-300 pointer-events-none shadow-2xl">
+                  Awal
+                  <div class="absolute top-1/2 -left-1.5 -translate-y-1/2 w-3 h-3 bg-black rotate-45 border-l border-b border-white/10"></div>
+               </div>
+            </a>
+
+            <a href="#siapa-saya" class="group relative flex items-center justify-center w-12 h-12 text-white hover:bg-white/10 rounded-full transition-all duration-300">
+               <i class="fa-solid fa-user text-xl"></i>
+               <div class="absolute left-20 px-4 py-2 bg-black/90 border border-white/10 text-white text-sm font-semibold rounded-lg whitespace-nowrap opacity-0 -translate-x-3 invisible group-hover:opacity-100 group-hover:translate-x-0 group-hover:visible transition-all duration-300 pointer-events-none shadow-2xl">
+                  Siapa Saya
+                  <div class="absolute top-1/2 -left-1.5 -translate-y-1/2 w-3 h-3 bg-black rotate-45 border-l border-b border-white/10"></div>
+               </div>
+            </a>
+
+            <a href="#jejak-saya" class="group relative flex items-center justify-center w-12 h-12 text-white hover:bg-white/10 rounded-full transition-all duration-300">
+               <i class="fa-solid fa-route text-xl"></i>
+               <div class="absolute left-20 px-4 py-2 bg-black/90 border border-white/10 text-white text-sm font-semibold rounded-lg whitespace-nowrap opacity-0 -translate-x-3 invisible group-hover:opacity-100 group-hover:translate-x-0 group-hover:visible transition-all duration-300 pointer-events-none shadow-2xl">
+                  Jejak Saya
+                  <div class="absolute top-1/2 -left-1.5 -translate-y-1/2 w-3 h-3 bg-black rotate-45 border-l border-b border-white/10"></div>
+               </div>
+            </a>
+
+            <a href="#senjata" class="group relative flex items-center justify-center w-12 h-12 text-white hover:bg-white/10 rounded-full transition-all duration-300">
+               <i class="fa-solid fa-screwdriver-wrench text-xl"></i>
+               <div class="absolute left-20 px-4 py-2 bg-black/90 border border-white/10 text-white text-sm font-semibold rounded-lg whitespace-nowrap opacity-0 -translate-x-3 invisible group-hover:opacity-100 group-hover:translate-x-0 group-hover:visible transition-all duration-300 pointer-events-none shadow-2xl">
+                  Senjata
+                  <div class="absolute top-1/2 -left-1.5 -translate-y-1/2 w-3 h-3 bg-black rotate-45 border-l border-b border-white/10"></div>
+               </div>
+            </a>
+
+            <a href="#ruang-karya" class="group relative flex items-center justify-center w-12 h-12 text-white hover:bg-white/10 rounded-full transition-all duration-300">
+               <i class="fa-solid fa-folder-open text-xl"></i>
+               <div class="absolute left-20 px-4 py-2 bg-black/90 border border-white/10 text-white text-sm font-semibold rounded-lg whitespace-nowrap opacity-0 -translate-x-3 invisible group-hover:opacity-100 group-hover:translate-x-0 group-hover:visible transition-all duration-300 pointer-events-none shadow-2xl">
+                  Ruang Karya
+                  <div class="absolute top-1/2 -left-1.5 -translate-y-1/2 w-3 h-3 bg-black rotate-45 border-l border-b border-white/10"></div>
+               </div>
+            </a>
+
+            <a href="#hubungi-saya" class="group relative flex items-center justify-center w-12 h-12 text-white hover:bg-white/10 rounded-full transition-all duration-300">
+               <i class="fa-solid fa-paper-plane text-xl"></i>
+               <div class="absolute left-20 px-4 py-2 bg-black/90 border border-white/10 text-white text-sm font-semibold rounded-lg whitespace-nowrap opacity-0 -translate-x-3 invisible group-hover:opacity-100 group-hover:translate-x-0 group-hover:visible transition-all duration-300 pointer-events-none shadow-2xl">
+                  Terhubung dengan Saya
+                  <div class="absolute top-1/2 -left-1.5 -translate-y-1/2 w-3 h-3 bg-black/50 backdrop-blur-sm rotate-45 border-l border-b border-white/10"></div>
+               </div>
+            </a>
+         </nav>
+         <nav id="mobile-nav" class="fade-bot duration-1500 sm:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+            <div class="relative w-[90vw] justify-center flex" id="navWrapper">
+               <!-- PILLS MAIN BAR -->
+               <div class="w-[11rem] flex items-center justify-between px-5 py-3 bg-black/40 backdrop-blur-sm border border-white/10 rounded-full shadow-2xl">
+                  <!-- LOGO kiri -->
+                  <a href="#awal" class="text-white font-bold tracking-widest text-sm"> HANAN NRC </a>
+
+                  <!-- TOGGLE kanan -->
+                  <button id="toggleBtn" class="relative w-8 h-6 flex flex-col justify-evenly items-center group">
+                     <span class="bar h-[2px] w-[70%] bg-white transition-all"></span>
+                     <span class="bar h-[2px] w-[70%] bg-white transition-all"></span>
+                  </button>
+               </div>
+
+               <!-- MENU -->
+               <div id="menu" class="absolute left-0 bottom-full mb-2 w-full bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden opacity-0 scale-y-0 origin-bottom transition-all duration-300">
+                  <a href="#awal" class="menu-item flex items-center gap-3 px-5 py-3 text-white hover:bg-white/10"> <i class="fa-solid fa-house"></i> Awal </a>
+
+                  <a href="#siapa-saya" class="menu-item flex items-center gap-3 px-5 py-3 text-white hover:bg-white/10"> <i class="fa-solid fa-user"></i> Siapa Saya </a>
+
+                  <a href="#jejak-saya" class="menu-item flex items-center gap-3 px-5 py-3 text-white hover:bg-white/10"> <i class="fa-solid fa-route"></i> Jejak Saya </a>
+
+                  <a href="#senjata" class="menu-item flex items-center gap-3 px-5 py-3 text-white hover:bg-white/10"> <i class="fa-solid fa-screwdriver-wrench"></i> Senjata Utama</a>
+
+                  <a href="#ruang-karya" class="menu-item flex items-center gap-3 px-5 py-3 text-white hover:bg-white/10"> <i class="fa-solid fa-folder-open"></i> Ruang Karya </a>
+
+                  <a href="#hubungi-saya" class="menu-item flex items-center gap-3 px-5 py-3 text-white hover:bg-white/10"> <i class="fa-solid fa-paper-plane"></i> Terhubung dengan Saya </a>
+               </div>
+            </div>
+         </nav>
+      </div>
+      <main>
+         <section id="awal" class="relative min-h-screen text-white flex items-center px-6 overflow-hidden">
+            <!-- TYPO BESAR -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+               <h1 class="text-[14vw] font-semibold text-white/[0.02] tracking-tight">SYSTEM</h1>
+            </div>
+
+            <div class="relative z-10 max-w-5xl mx-auto w-full grid lg:grid-cols-12 gap-16">
+               <!-- LEFT -->
+               <div class="lg:col-span-7 space-y-8">
+                  <div class="fade-bot duration-1000 text-[10px] tracking-[0.3em] uppercase text-zinc-500">Developer — Makn Ende</div>
+
+                  <h1 class="fade-top duration-1100 text-4xl md:text-6xl font-semibold leading-[1.1] tracking-tight">
+                     Bukan Sekadar Coding. <br />
+                     Saya Membangun Struktur.
+                  </h1>
+
+                  <p class="fade-left duration-1300 max-w-md text-sm text-zinc-400 leading-relaxed">Berfokus pada pengembangan sistem yang terstruktur, rapi, dan efisien. Setiap proses dimulai dengan perencanaan yang matang untuk menghasilkan output yang maksimal dan stabil.</p>
+
+                  <!-- TAG -->
+                  <div class="fade-left duration-1300 flex flex-wrap gap-2 text-[10px]">
+                     <span class="px-3 py-1 border border-zinc-800 text-zinc-400 rounded-full">STRUCTURED</span>
+                     <span class="px-3 py-1 border border-zinc-800 text-zinc-400 rounded-full">CLEAN</span>
+                     <span class="px-3 py-1 border border-zinc-800 text-zinc-400 rounded-full">MAX OUTPUT</span>
+                  </div>
+
+                  <!-- CTA -->
+                  <div class="fade-right duration-1600 flex items-center gap-6 pt-4">
+                     <a href="#ruang-karya" class="group relative px-6 py-3 border border-white bg-zinc-950/50 backdrop-blur-sm overflow-hidden">
+                        <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+
+                        <span class="relative z-10 text-xs font-semibold uppercase tracking-[0.25em] group-hover:text-black"> Lihat Sistem </span>
+                     </a>
+
+                     <a href="#hubungi-saya" class="text-xs uppercase tracking-widest text-zinc-500 hover:text-white transition"> Hubungi </a>
+                  </div>
+               </div>
+
+               <!-- RIGHT -->
+               <div class="lg:col-span-5 border-l border-zinc-800 pl-8 space-y-8">
+                  <div class="fade-right duration-800 space-y-2">
+                     <p class="text-[10px] tracking-widest text-zinc-500 uppercase">Prinsip</p>
+                     <h3 class="text-lg font-semibold">Struktur yang Jelas</h3>
+                     <p class="text-sm text-zinc-400 leading-relaxed">Sistem dibangun dengan fondasi rapi agar mudah dikembangkan dan minim error.</p>
+                  </div>
+
+                  <div class="fade-right duration-1800 space-y-2">
+                     <h3 class="text-lg font-semibold">Hasil Maksimal</h3>
+                     <p class="text-sm text-zinc-400 leading-relaxed">Tidak hanya berjalan, tetapi memastikan performa dan tujuan jelas.</p>
+                  </div>
+
+                  <div class="fade-right duration-2800 space-y-2">
+                     <h3 class="text-lg font-semibold">Perencanaan Awal</h3>
+                     <p class="text-sm text-zinc-400 leading-relaxed">Semua dimulai dari persiapan matang agar proses lebih efisien.</p>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section id="siapa-saya" class="min-h-screen text-zinc-100 py-24 px-6 font-sans relative overflow-hidden">
+            <div class="absolute lg:-top-[-5rem] -top-[-1rem] left-10 text-[15vw] font-black text-white/[0.02] select-none pointer-events-none leading-[0.8]">TENTANG SAYA</div>
+
+            <div class="max-w-6xl mx-auto relative z-10">
+               <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                  <div class="lg:col-span-5 order-2 lg:order-1">
+                     <div class="fade-bot duration-800 relative group max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+                        <!-- frame 1 -->
+                        <div class="absolute -inset-2 sm:-inset-3 md:-inset-4 border border-white/10 translate-x-1 translate-y-1 sm:translate-x-2 sm:translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-500"></div>
+
+                        <!-- frame 2 -->
+                        <div class="absolute -inset-2 sm:-inset-3 md:-inset-4 border-2 border-white translate-x-2 translate-y-2 sm:translate-x-3 sm:translate-y-3 md:translate-x-4 md:translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700"></div>
+
+                        <!-- image -->
+                        <div class="relative aspect-[4/5] sm:aspect-[3/4] bg-zinc-900 overflow-hidden border-4 sm:border-6 md:border-8 border-[#09090b] shadow-2xl grayscale hover:grayscale-0 transition-all duration-1000">
+                           <img src="img/hanan.jpg" alt="Hanan" class="w-full h-full object-cover scale-105 sm:scale-110 group-hover:scale-100 transition-transform duration-1000" />
+
+                           <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] opacity-20"></div>
+                        </div>
+
+                        <!-- badge -->
+                        <div class="absolute bottom-2 right-2 sm:-bottom-4 sm:-right-4 md:-bottom-6 md:-right-6 bg-white text-black px-3 py-2 sm:p-3 md:p-4 font-black text-[10px] sm:text-xs tracking-[0.3em] sm:tracking-[0.5em] uppercase shadow-[6px_6px_0px_0px_rgba(39,39,42,1)]">EST. 2026</div>
+                     </div>
+                  </div>
+
+                  <div class="fade-top duration-1200 lg:col-span-7 order-1 lg:order-2 space-y-10">
+                     <div class="space-y-2">
+                        <h2 class="text-6xl md:text-8xl font-black text-white tracking-tighter leading-none">
+                           SIAPA <br />
+                           <span class="text-transparent" style="-webkit-text-stroke: 1px white">SAYA?</span>
+                        </h2>
+                     </div>
+
+                     <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                        <div class="md:col-span-8">
+                           <p class="text-zinc-400 leading-relaxed text-sm text-justify border-l-2 border-zinc-800 pl-6">Saya adalah seorang pengembang perangkat lunak yang berfokus pada efisiensi kode dan kualitas antarmuka pengguna. Dengan latar belakang PPLG, saya mendedikasikan diri untuk membangun arsitektur sistem yang bersih, mulai dari struktur database hingga interaksi frontend yang presisi. Saya tidak hanya menulis baris kode; saya membangun pengalaman digital yang bermakna.</p>
+                        </div>
+
+                        <div class="fade-right duration-1400 md:col-span-4 flex flex-col justify-end space-y-4 font-mono">
+                           <div class="group">
+                              <p class="text-[9px] text-zinc-500 mb-1">CORE_DEV</p>
+                              <div class="h-1 w-full bg-zinc-900 overflow-hidden">
+                                 <div class="h-full bg-white w-full -translate-x-[25%] group-hover:translate-x-0 transition-transform duration-700"></div>
+                              </div>
+                           </div>
+                           <div class="group">
+                              <p class="text-[9px] text-zinc-500 mb-1">UI_ARCH</p>
+                              <div class="h-1 w-full bg-zinc-900 overflow-hidden">
+                                 <div class="h-full bg-zinc-400 w-full -translate-x-[35%] group-hover:translate-x-0 transition-transform duration-700"></div>
+                              </div>
+                           </div>
+                           <div class="group">
+                              <p class="text-[9px] text-zinc-500 mb-1">AI_ASSIST</p>
+                              <div class="h-1 w-full bg-zinc-900 overflow-hidden">
+                                 <div class="h-full bg-zinc-400 w-full -translate-x-[20%] group-hover:translate-x-0 transition-transform duration-700"></div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div class="flex flex-wrap items-center gap-8 pt-6">
+                        <a href="#" class="group relative px-8 py-4 border bg-zinc-950/50 backdrop-blur-sm border-white overflow-hidden transition-all">
+                           <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                           <span class="relative z-10 text-xs font-bold tracking-[0.3em] uppercase text-white group-hover:text-black">Unduh_CV.sh</span>
+                        </a>
+
+                        <div class="flex gap-4">
+                           <div class="w-10 h-[1px] bg-zinc-800"></div>
+                           <p class="text-[10px] text-zinc-400 font-mono italic">"Code is poetry in motion."</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section id="jejak-saya" class="min-h-screen text-zinc-100 py-24 px-6 font-sans relative">
+            <div class="absolute bottom-10 right-10 text-[10vw] font-black text-white/[0.04] select-none pointer-events-none">HISTORY</div>
+
+            <div class="max-w-6xl mx-auto">
+               <div class="fade-left duration-800 mb-20 space-y-4">
+                  <h2 class="text-5xl font-black tracking-tighter uppercase">Jejak / <span class="text-zinc-600">Langkah</span></h2>
+                  <div class="flex items-center gap-4">
+                     <div class="h-[1px] w-20 bg-white"></div>
+                     <p class="text-[10px] font-mono tracking-[0.4em] text-zinc-500 uppercase">System_Logs_Chronology</p>
+                  </div>
+               </div>
+
+               <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                  <!-- KIRI: PENDIDIKAN -->
+                  <div class="fade-top duration-1200 lg:col-span-4 z-10">
+                     <div class="p-8 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm sticky top-24 overflow-hidden">
+                        <!-- aksen -->
+                        <div class="absolute -top-10 -right-10 w-40 h-40 border border-zinc-800 rounded-full opacity-20"></div>
+
+                        <p class="text-xs font-bold mb-6 text-zinc-500 tracking-widest uppercase">Pendidikan - Sekarang</p>
+
+                        <h3 class="text-2xl font-black text-white tracking-tight">MAKN Ende</h3>
+
+                        <p class="text-sm text-zinc-500 mt-2 leading-relaxed">Fokus di jurusan <span class="text-white font-semibold">PPLG</span>, mulai serius di dunia pengembangan web dari dasar sampai eksplorasi sistem.</p>
+
+                        <!-- MINI TAG -->
+                        <div class="flex gap-2 mt-6 text-[10px] font-mono">
+                           <span class="px-3 py-1 border border-zinc-800 text-zinc-400 rounded-full"> PPLG </span>
+                           <span class="px-3 py-1 border border-zinc-800 text-zinc-400 rounded-full"> WEB </span>
+                           <span class="px-3 py-1 border border-zinc-800 text-zinc-400 rounded-full"> SYSTEM </span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- KANAN: PERJALANAN -->
+                  <div class="fade-bot duration-1600 lg:col-span-8 relative border-l border-zinc-800 ml-4 lg:ml-0 pl-8 lg:pl-12 space-y-16">
+                     <!-- CROCODIC -->
+                     <div class="relative group">
+                        <div class="absolute -left-[37px] lg:-left-[53px] top-0 w-3 h-3 bg-zinc-800 border-4 border-[#09090b] group-hover:bg-white"></div>
+
+                        <div class="space-y-4">
+                           <div class="group relative bg-zinc-950/50 backdrop-blur-sm inline-block pr-3 pl-3.5 pb-1 border border-zinc-800 overflow-hidden transition-all">
+                              <!-- hover layer -->
+                              <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+
+                              <!-- text -->
+                              <span class="relative z-10 text-[9px] font-bold tracking-widest uppercase text-zinc-400 group-hover:text-black"> 2025 - 2026 </span>
+                           </div>
+
+                           <h3 class="text-2xl font-bold text-white tracking-tight">Kelas Industri Crocodic</h3>
+
+                           <p class="text-zinc-500 text-sm leading-relaxed max-w-xl">Masuk ke kelas industri dan mulai mendalami backend development, khususnya Laravel serta pengembangan sistem monitoring berbasis web.</p>
+
+                           <div class="flex gap-3 text-[9px] font-mono text-zinc-600">
+                              <span>[ LARAVEL ]</span>
+                              <span>[ BACKEND ]</span>
+                              <span>[ SYSTEM ]</span>
+                           </div>
+                        </div>
+                     </div>
+
+                     <!-- LOMBA -->
+                     <div class="relative group">
+                        <div class="absolute -left-[37px] lg:-left-[53px] top-0 w-3 h-3 bg-zinc-800 border-4 border-[#09090b] group-hover:bg-white transition-colors"></div>
+
+                        <div class="space-y-4">
+                           <div class="group relative inline-block pr-3 pl-3.5 pb-1 border border-zinc-800 overflow-hidden transition-all">
+                              <!-- hover layer -->
+                              <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+
+                              <!-- text -->
+                              <span class="relative z-10 text-[9px] font-bold tracking-widest uppercase text-zinc-400 group-hover:text-black"> 2025 - 2026 </span>
+                           </div>
+
+                           <h3 class="text-2xl font-bold text-white tracking-tight">Juara 1 Lomba UI/UX</h3>
+
+                           <p class="text-zinc-500 text-sm leading-relaxed max-w-xl">Mengikuti dan memenangkan lomba UI/UX dengan pendekatan desain modern, serta mulai memahami hubungan antara tampilan dan pengalaman pengguna.</p>
+
+                           <div class="flex gap-3 text-[9px] font-mono text-zinc-600">
+                              <span>[ UI/UX ]</span>
+                              <span>[ FIGMA ]</span>
+                              <span>[ DESIGN ]</span>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- AWAL MINAT -->
+                     <div class="relative group">
+                        <div class="absolute -left-[37px] lg:-left-[53px] top-0 w-3 h-3 bg-zinc-800 border-4 border-[#09090b] group-hover:bg-white transition-colors"></div>
+
+                        <div class="space-y-4">
+                           <div class="group relative inline-block pr-3 pl-3.5 pb-1 border border-zinc-800 overflow-hidden transition-all">
+                              <!-- hover layer -->
+                              <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+
+                              <!-- text -->
+                              <span class="relative z-10 text-[9px] font-bold tracking-widest uppercase text-zinc-400 group-hover:text-black"> 2024 - 2025 </span>
+                           </div>
+
+                           <h3 class="text-2xl font-bold text-white tracking-tight">Awal Ketertarikan PPLG</h3>
+
+                           <p class="text-zinc-500 text-sm leading-relaxed max-w-xl">Masuk MAK Negeri Ende dengan rasa penasaran tinggi terhadap dunia teknologi. Mulai dari dasar HTML & CSS, membangun tampilan sederhana dan memahami struktur web dari nol.</p>
+
+                           <div class="flex gap-3 text-[9px] font-mono text-zinc-600">
+                              <span>[ HTML ]</span>
+                              <span>[ CSS ]</span>
+                              <span>[ BASICS ]</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)" />
+
+         <section id="senjata" class="min-h-screen text-zinc-200 py-24 px-6 font-sans relative overflow-hidden">
+            <div class="absolute -top-20 left-10 text-[12vw] font-black text-white/[0.02] select-none pointer-events-none">EQUIPMENT</div>
+
+            <div class="max-w-6xl mx-auto relative z-10">
+               <div class="fade-right duration-600 relative mb-20">
+                  <div class="absolute -left-10 top-1/2 w-32 h-[1px] bg-white hidden lg:block"></div>
+                  <h2 class="text-6xl font-black tracking-tighter uppercase italic ml-0 lg:ml-28">Senjata <span class="text-transparent" style="-webkit-text-stroke: 1px white">Utama</span></h2>
+               </div>
+
+               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:-space-x-[1px] lg:-space-y-[1px]">
+                  <!-- PHP -->
+                  <div class="fade-bot duration-800 group relative p-10 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm hover:bg-white transition-all overflow-hidden lg:translate-y-0">
+                     <div class="relative z-10">
+                        <div class="mb-8 text-zinc-500 group-hover:text-black text-6xl">
+                           <i class="fa-brands fa-php"></i>
+                        </div>
+                        <span class="font-mono text-[9px] text-zinc-600 tracking-[0.3em]">CLASS: BACKEND_CORE</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 group-hover:text-black italic">PHP</h3>
+                        <p class="text-[11px] text-zinc-500 uppercase">Logika utama pada sisi server.</p>
+                     </div>
+                     <div class="absolute top-0 right-0 w-1 h-full bg-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+
+                  <!-- LARAVEL -->
+                  <div class="fade-bot duration-800 group relative p-10 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm hover:bg-white transition-all overflow-hidden lg:translate-y-10">
+                     <div class="relative z-10">
+                        <div class="mb-8 text-zinc-500 group-hover:text-black text-6xl">
+                           <i class="fa-brands fa-laravel"></i>
+                        </div>
+                        <span class="font-mono text-[9px] text-zinc-600 tracking-[0.3em]">CLASS: FRAMEWORK</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 group-hover:text-black italic">LARAVEL</h3>
+                        <p class="text-[11px] text-zinc-500 uppercase">Framework untuk pengembangan yang lebih terstruktur.</p>
+                     </div>
+                     <div class="absolute top-0 right-0 w-1 h-full bg-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+
+                  <!-- JAVASCRIPT -->
+                  <div class="fade-bot duration-800 group relative p-10 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm hover:bg-white transition-all overflow-hidden lg:translate-y-20">
+                     <div class="relative z-10">
+                        <div class="mb-8 text-zinc-500 group-hover:text-black text-6xl">
+                           <i class="fa-brands fa-square-js"></i>
+                        </div>
+                        <span class="font-mono text-[9px] text-zinc-600 tracking-[0.3em]">CLASS: LIGHT_AGILITY</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 group-hover:text-black italic">JAVASCRIPT</h3>
+                        <p class="text-[11px] text-zinc-500 uppercase">Menangani interaksi pada sisi klien.</p>
+                     </div>
+                     <div class="absolute top-0 right-0 w-1 h-full bg-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+
+                  <!-- TAILWIND -->
+                  <div class="fade-bot duration-800 group relative p-10 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm hover:bg-white transition-all overflow-hidden lg:translate-y-0">
+                     <div class="relative z-10">
+                        <div class="mb-8 text-zinc-500 group-hover:text-black">
+                           <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" />
+                           </svg>
+                        </div>
+                        <span class="font-mono text-[9px] text-zinc-600 tracking-[0.3em]">CLASS: UI_ENGINE</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 group-hover:text-black italic">TAILWIND CSS</h3>
+                        <p class="text-[11px] text-zinc-500 uppercase">Mempermudah proses penataan tampilan.</p>
+                     </div>
+                     <div class="absolute top-0 right-0 w-1 h-full bg-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+
+                  <!-- MYSQL -->
+                  <div class="fade-bot duration-800 group relative p-10 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm hover:bg-white transition-all overflow-hidden lg:translate-y-10">
+                     <div class="relative z-10">
+                        <div class="mb-8 text-zinc-500 group-hover:text-black text-6xl">
+                           <i class="fas fa-database"></i>
+                        </div>
+                        <span class="font-mono text-[9px] text-zinc-600 tracking-[0.3em]">CLASS: DATABASE</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 group-hover:text-black italic">MYSQL DB</h3>
+                        <p class="text-[11px] text-zinc-500 uppercase">Sistem penyimpanan data yang stabil.</p>
+                     </div>
+                     <div class="absolute top-0 right-0 w-1 h-full bg-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+
+                  <!-- AI -->
+                  <div class="fade-bot duration-800 group relative p-10 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm hover:bg-white transition-all overflow-hidden lg:translate-y-20">
+                     <div class="relative z-10">
+                        <div class="mb-8 animate-pulse text-zinc-500 group-hover:text-black text-6xl">
+                           <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <span class="font-mono text-[9px] text-zinc-600 tracking-[0.3em]">CLASS: AUGMENTED_INTEL</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 group-hover:text-black italic">AI HYBRID</h3>
+                        <p class="text-[11px] text-zinc-500 uppercase">Integrasi teknologi AI untuk optimasi sistem.</p>
+                     </div>
+                     <div class="absolute top-0 right-0 w-1 h-full bg-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+
+                  <!-- FONT AWESOME -->
+                  <div class="fade-bot duration-800 group relative p-10 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm hover:bg-white transition-all overflow-hidden lg:translate-y-0">
+                     <div class="relative z-10">
+                        <div class="mb-8 text-zinc-500 group-hover:text-black text-6xl">
+                           <i class="fa-solid fa-icons"></i>
+                        </div>
+                        <span class="font-mono text-[9px] text-zinc-600 tracking-[0.3em]">CLASS: ICON_SYSTEM</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 group-hover:text-black italic">FONT AWESOME</h3>
+                        <p class="text-[11px] text-zinc-500 uppercase">Menyediakan ikon untuk memperkaya tampilan.</p>
+                     </div>
+                     <div class="absolute top-0 right-0 w-1 h-full bg-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+
+                  <!-- SWEETALERT -->
+                  <div class="fade-bot duration-800 group relative p-10 border border-zinc-800 bg-zinc-950/50 backdrop-blur-sm hover:bg-white transition-all overflow-hidden lg:translate-y-10">
+                     <div class="relative z-10">
+                        <div class="mb-8 text-zinc-500 group-hover:text-black text-6xl">
+                           <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <span class="font-mono text-[9px] text-zinc-600 tracking-[0.3em]">CLASS: ALERT_UI</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 group-hover:text-black italic">SWEETALERT</h3>
+                        <p class="text-[11px] text-zinc-500 uppercase">Menampilkan notifikasi dengan tampilan modern.</p>
+                     </div>
+                     <div class="absolute top-0 right-0 w-1 h-full bg-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+
+                  <!-- SEARCH -->
+                  <div class="fade-bot duration-800 relative p-10 border border-dashed border-zinc-800 bg-zinc-950/50 backdrop-blur-sm flex items-center justify-center group overflow-hidden lg:translate-y-20">
+                     <div class="text-center">
+                        <div class="w-10 h-10 border border-zinc-800 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:border-white transition-colors">
+                           <span class="text-zinc-600 group-hover:text-white">+</span>
+                        </div>
+                        <p class="font-mono text-[8px] text-zinc-700 uppercase tracking-widest">Searching_Next_Gear</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section id="ruang-karya" class="min-h-screen text-zinc-100 py-24 px-6 font-sans relative z-10">
+            <div class="absolute bottom-10 right-10 text-[10vw] font-black text-white/[0.03] select-none pointer-events-none">PROJECTS</div>
+
+            <div class="max-w-6xl mx-auto">
+
+               <div class="fade-left duration-800 mb-20 space-y-4">
+                  <h2 class="text-5xl font-black tracking-tighter uppercase">Ruang / <span class="text-zinc-500">Karya</span></h2>
+
+                  <div class="flex items-center gap-4">
+                     <div class="h-[1px] w-20 bg-white"></div>
+                     <p class="text-[10px] font-mono tracking-[0.4em] text-zinc-500 uppercase">Project_Archive_Display</p>
+                  </div>
+               </div>
+
+               <div class="fade-bot duration-1000 border border-zinc-800 z-10 overflow-hidden">
+                  <div class="grid grid-cols-1 lg:grid-cols-12">
+                     <!-- LEFT PROJECT VIEW -->
+                     <div id="main-project-view" class="lg:col-span-7 p-8 md:p-12 border-b lg:border-b-0 lg:border-r border-zinc-800 backdrop-blur-sm bg-zinc-950/50 z-50">
+                        <div class="space-y-6 animate-fadeIn">
+                           <!-- IMAGE -->
+                           <div class="relative aspect-video w-full overflow-hidden border border-zinc-800 group">
+                              <img id="main-img" src="projects/img1.png" alt="Project Image" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-90" />
+
+                              <!-- overlay -->
+                              <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
+                           </div>
+
+                           <!-- TITLE -->
+                           <div>
+                              <h2 id="main-title" class="text-3xl font-bold tracking-tight text-white">Project Name</h2>
+
+                              <p id="main-desc" class="text-zinc-400 mt-4 text-sm leading-relaxed max-w-xl">Deskripsi lengkap proyek akan muncul di sini saat Anda memilih dari katalog di sebelah kanan.</p>
+                           </div>
+
+                           <!-- STACK -->
+                           <div class="space-y-3">
+                              <div class="flex justify-between text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+                                 <span>Stack Distribution</span>
+                                 <span id="main-tech-list">PHP • Tailwind • MySQL</span>
+                              </div>
+
+                              <div class="h-1 w-full overflow-hidden flex">
+                                 <div id="tech-bar-1" class="h-full bg-white w-[60%]"></div>
+                                 <div id="tech-bar-2" class="h-full bg-zinc-400 w-[30%]"></div>
+                                 <div id="tech-bar-3" class="h-full bg-zinc-700 w-[10%]"></div>
+                              </div>
+                           </div>
+
+                           <!-- BUTTONS -->
+                           <div class="flex gap-4 pt-4">
+                              <a id="main-link-code" href="#" class="flex-1 text-center border border-zinc-700 text-zinc-300 py-3 hover:bg-zinc-800 transition-all text-xs uppercase tracking-widest font-bold"> Source Code </a>
+
+                              <a id="main-link-live" href="#" class="flex-1 text-center bg-white text-black py-3 hover:bg-zinc-200 transition-all text-xs uppercase tracking-widest font-bold"> Live Demo </a>
+                           </div>
+                        </div>
+                     </div>
+
+                     <!-- RIGHT CATALOG -->
+                     <div class="lg:col-span-5 flex flex-col bg-zinc-950/50 backdrop-blur-sm">
+                        <!-- CATALOG HEADER -->
+                        <div class="p-6 border-b flex justify-between items-center">
+                           <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest"> Project Catalog </span>
+
+                           <div class="flex gap-2">
+                              <button onclick="prevProject()" class="px-3 py-1 border border-zinc-800 text-zinc-400 hover:bg-zinc-950 transition-colors text-xs bg-zinc-900"><i class="fa-solid fa-angle-left"></i></button>
+
+                              <button onclick="nextProject()" class="px-3 py-1 border border-zinc-800 text-zinc-400 hover:bg-zinc-950 transition-colors text-xs bg-zinc-900"><i class="fa-solid fa-angle-right"></i></button>
+                           </div>
+                        </div>
+
+                        <!-- PROJECT LIST -->
+                        <div id="project-list" class="flex-1 overflow-y-auto max-h-[600px] p-6 space-y-4 custom-scrollbar"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section id="hubungi-saya" class="min-h-screen text-zinc-100 py-24 px-6 font-sans relative overflow-hidden">
+
+            <!-- text besar -->
+            <div class="absolute left-0 bottom-0 text-[13vw] font-black text-white/[0.02] pointer-events-none">CONNECT</div>
+
+            <div class="max-w-6xl mx-auto relative z-10">
+               <!-- HEADER -->
+               <div class="fade-bot duration-800 mb-20">
+                  <p class="text-[10px] tracking-[0.5em] text-zinc-500 uppercase mb-4">Communication Channel</p>
+                  <h2 class="text-5xl font-black tracking-tight">Terhubung dengan <span class="text-zinc-500">Saya</span></h2>
+               </div>
+
+               <div class="fade-left duration-800 grid grid-cols-1 lg:grid-cols-12 border border-zinc-800">
+                  <!-- LEFT PANEL -->
+                  <div class="lg:col-span-5 border-b lg:border-b-0 lg:border-r border-zinc-800 p-10 flex flex-col justify-between bg-zinc-950/50 backdrop-blur-sm relative overflow-hidden">
+                     <!-- HEAD -->
+                     <div class="space-y-6">
+                        <div>
+                           <p class="text-[10px] uppercase tracking-[0.4em] text-zinc-600 mb-3">Collaboration</p>
+                           <h3 class="text-2xl font-black text-white tracking-tight">
+                              Mari Bangun Sesuatu <br />
+                              yang Berdampak
+                           </h3>
+                        </div>
+
+                        <p class="text-sm text-zinc-400 leading-relaxed max-w-sm">Saya terbuka untuk kerja sama dalam pengembangan website, sistem, maupun optimasi proyek digital. Fokus pada solusi yang efisien, terstruktur, persiapan yang matang, dan siap digunakan.</p>
+                     </div>
+
+                     <!-- VALUE / KELEBIHAN -->
+                     <div class="mt-10 space-y-4 text-[12px] font-mono text-zinc-500">
+                        <p>[ terstruktur ] → planning yang rinci & presisi</p>
+                        <p>[ fleksibel ] → bisa adaptasi kebutuhan proyek</p>
+                        <p>[ fokus ] → hasil maximal, bukan sekadar coding</p>
+                     </div>
+
+                     <!-- CTA MINI -->
+                     <div class="mt-10 border-t border-zinc-800 pt-6 space-y-4">
+                        <p class="text-xs text-zinc-500 uppercase tracking-widest">Hubungi melalui:</p>
+
+                        <div class="flex flex-col gap-3 text-sm">
+                           <a href="https://www.instagram.com/hnanrmdhn" class="group flex justify-between items-center text-zinc-400 hover:text-white transition" target="_blank">
+                              <span>Instagram</span>
+                              <span class="w-8 h-[1px] bg-zinc-700 group-hover:bg-white transition"></span>
+                           </a>
+
+                           <a href="https://github.com/hananchaliq" class="group flex justify-between items-center text-zinc-400 hover:text-white transition" target="_blank">
+                              <span>GitHub</span>
+                              <span class="w-8 h-[1px] bg-zinc-700 group-hover:bg-white transition"></span>
+                           </a>
+
+                           <a href="https://www.linkedin.com/in/hananchaliq" class="group flex justify-between items-center text-zinc-400 hover:text-white transition" target="_blank">
+                              <span>LinkedIn</span>
+                              <span class="w-8 h-[1px] bg-zinc-700 group-hover:bg-white transition"></span>
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- RIGHT FORM (TETAP) -->
+                  <div class="lg:col-span-7 p-10 bg-zinc-950/70 backdrop-blur-sm relative overflow-hidden">
+                     <form id="contactForm" class="space-y-10">
+                        <!-- INPUT GROUP -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                           <div class="space-y-2">
+                              <label class="text-[10px] uppercase tracking-widest text-zinc-500">Nama Lengkap</label>
+                              <input type="text" id="name" required class="w-full bg-transparent border-b border-zinc-700 py-2 focus:outline-none focus:border-white transition text-sm text-white placeholder-zinc-600" placeholder="Hanan" />
+                           </div>
+
+                           <div class="space-y-2">
+                              <label class="text-[10px] uppercase tracking-widest text-zinc-500">Email</label>
+                              <input type="email" id="email" required class="w-full bg-transparent border-b border-zinc-700 py-2 focus:outline-none focus:border-white transition text-sm text-white placeholder-zinc-600" placeholder="name@example.com" />
+                           </div>
+                        </div>
+
+                        <!-- MESSAGE -->
+                        <div class="space-y-2">
+                           <label class="text-[10px] uppercase tracking-widest text-zinc-500">Pesan</label>
+                           <textarea id="message" rows="4" required class="w-full bg-transparent border-b border-zinc-700 py-2 focus:outline-none focus:border-white transition text-sm text-white placeholder-zinc-600 resize-none" placeholder="Tulis pesan Anda di sini..."></textarea>
+                        </div>
+
+                        <!-- BUTTON -->
+                        <div class="pt-4">
+                           <button type="submit" class="group relative w-full py-4 border border-white overflow-hidden transition-all">
+                              <!-- layer naik -->
+                              <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+
+                              <!-- text -->
+                              <span class="relative z-10 text-sm font-bold uppercase tracking-[0.3em] text-white group-hover:text-black"> Kirim Pesan </span>
+                           </button>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <script>
+            const btn = document.getElementById("toggleBtn");
+            const menu = document.getElementById("menu");
+            const wrapper = document.getElementById("navWrapper");
+            const bars = document.querySelectorAll(".bar");
+            const items = document.querySelectorAll(".menu-item");
+
+            let open = false;
+
+            function closeMenu() {
+               open = false;
+
+               menu.classList.add("opacity-0", "scale-y-0");
+
+               bars[0].style.transform = "";
+               bars[1].style.transform = "";
+            }
+
+            function openMenu() {
+               open = true;
+
+               menu.classList.remove("opacity-0", "scale-y-0");
+
+               bars[0].style.transform = "rotate(45deg) translateY(6px)";
+               bars[1].style.transform = "rotate(-45deg) translateY(-6px)";
+            }
+
+            btn.addEventListener("click", e => {
+               e.stopPropagation();
+               open ? closeMenu() : openMenu();
+            });
+
+            // klik item menu → auto close
+            items.forEach(item => {
+               item.addEventListener("click", closeMenu);
+            });
+
+            // klik luar → auto close
+            document.addEventListener("click", e => {
+               if (!wrapper.contains(e.target)) {
+                  closeMenu();
+               }
+            });
+
+            const line = document.querySelector(".cursor-line");
+
+            document.addEventListener("mousemove", e => {
+               line.style.top = e.clientY + "px";
+               line.style.left = e.clientX + "px";
+            });
+
+            const targets = document.querySelectorAll("a, button");
+
+            targets.forEach(el => {
+               el.addEventListener("mouseenter", () => {
+                  line.style.height = "80px"; // memanjang saat hover
+               });
+
+               el.addEventListener("mouseleave", () => {
+                  line.style.height = "40px";
+               });
+            });
+
+            const inputs = document.querySelectorAll("input, textarea");
+
+            inputs.forEach(el => {
+               el.addEventListener("mouseenter", () => {
+                  line.style.height = "20px";
+                  line.style.background = "white";
+               });
+
+               el.addEventListener("mouseleave", () => {
+                  line.style.height = "40px";
+               });
+            });
+
+            inputs.forEach(el => {
+               el.addEventListener("focus", () => {
+                  line.style.height = "60px";
+                  line.style.background = "#22c55e"; // ijo dikit biar beda
+               });
+
+               el.addEventListener("blur", () => {
+                  line.style.height = "40px";
+                  line.style.background = "white";
+               });
+            });
+
+            document.querySelectorAll(".ripple").forEach(el => {
+               el.addEventListener("click", function (e) {
+                  const circle = document.createElement("span");
+                  const rect = this.getBoundingClientRect();
+
+                  circle.style.left = e.clientX - rect.left + "px";
+                  circle.style.top = e.clientY - rect.top + "px";
+
+                  this.appendChild(circle);
+
+                  setTimeout(() => circle.remove(), 500);
+               });
+            });
+
+            document.getElementById("contactForm").addEventListener("submit", function (e) {
+               e.preventDefault();
+
+               // Ambil data dari input
+               const name = document.getElementById("name").value;
+               const email = document.getElementById("email").value;
+               const message = document.getElementById("message").value;
+
+               // GANTI INI: Gunakan nomor WA kamu (format: 628xxx)
+               const phoneNumber = "6282146020022";
+
+               // Format pesan WhatsApp (mendukung bold dengan *)
+               const text = `Halo, perkenalkan saya ${name}.%0A%0A` + `Saya tertarik dengan karya dan pengalaman yang ditampilkan pada portfolio Anda.%0A` + `Saya ingin mendiskusikan kemungkinan kerja sama lebih lanjut.%0A%0A` + `Pesan:%0A${message}%0A%0A` + `Silakan hubungi saya melalui email berikut:%0A${email}%0A%0A` + `Saya menantikan respons Anda. Terima kasih.`;
+
+               // Link API WhatsApp
+               const waUrl = `https://wa.me/${phoneNumber}?text=${text}`;
+
+               // Buka di tab baru
+               window.open(waUrl, "_blank");
+            });
+
+            // Data projects (Hanan, sesuaikan isinya di sini)
+            const projects = [
+               {
+                  title: "Project Sistem Perpus",
+                  desc: "Sistem modern untuk pengelolaan perpustakaan dengan dashboard administrasi dan analitik data secara real-time untuk kebutuhan institusi.",
+                  image: "projects/e-perpus.png",
+                  tech: "PHP Native • Tailwind • MySQL",
+                  code: "https://github.com/hananchaliq/sistem-perpus",
+                  live: "#",
+                  percent: ["40%", "30%", "30%"],
+               },
+               {
+                  title: "Osim Management System",
+                  desc: "Desain UI/UX berbasis Figma untuk sistem organisasi OSIS, dilengkapi arsip digital dan manajemen kegiatan sekolah secara terstruktur dan modern.",
+                  image: "projects/osim-makn-ende.png",
+                  tech: "Figma • UI/UX Design • Prototype",
+                  code: "https://www.figma.com/design/pJglPhbdpgUoQpEMbUKQBr/Untitled?node-id=0-1&p=f&t=lbC5HLPJ48sbAbgk-0",
+                  live: "https://www.figma.com/proto/pJglPhbdpgUoQpEMbUKQBr/Untitled?node-id=363-52&p=f&t=lbC5HLPJ48sbAbgk-0&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=363%3A52",
+                  percent: ["80%", "10%", "10%"],
+               },
+               {
+                  title: "Ruang Etalasys",
+                  desc: "Website organisasi komunitas yang berfokus pada pelaporan keuangan serta kalkulator anggaran otomatis untuk kebutuhan usaha lokal.",
+                  image: "projects/ruang-etalasys.png",
+                  tech: "PHP • Tailwind • MySQL",
+                  code: "https://github.com/hananchaliq/ruang-etalasys",
+                  live: "#",
+                  percent: ["40%", "35%", "25%"],
+               },
+               {
+                  title: "Hanan Topup Store",
+                  desc: "Sistem toko top up digital dengan panel admin berbasis Filament Laravel untuk pengelolaan produk, transaksi, dan data pelanggan secara terstruktur dan efisien.",
+                  image: "projects/hanan-topup.png",
+                  tech: "Filament Laravel • Tailwind • MySQL",
+                  code: "https://github.com/hananchaliq/hanantopupstore",
+                  live: "#",
+                  percent: ["50%", "25%", "25%"],
+               },
+               {
+                  title: "Filament Laravel",
+                  desc: "Proyek pembelajaran pembuatan panel admin menggunakan Filament Laravel dengan integrasi database MySQL untuk memahami struktur CRUD dan manajemen data.",
+                  image: "projects/filament-laravel.png",
+                  tech: "Filament Laravel • MySQL",
+                  code: "https://github.com/hananchaliq/laravel-filament",
+                  live: "#",
+                  percent: ["70%", "30%"],
+               },
+               {
+                  title: "Latansa Shop",
+                  desc: "Website toko sederhana untuk kebutuhan penjualan online dengan sistem dasar yang ringan dan mudah dikelola.",
+                  image: "projects/latansa-shop.png",
+                  tech: "HTML • Tailwind CSS • JavaScript",
+                  code: "https://github.com/hananchaliq/latansa-shop",
+                  live: "#",
+                  percent: ["25%", "35%", "40%"],
+               },
+               {
+                  title: "Toko Buku Sederhana",
+                  desc: "Website toko sederhana untuk penjualan buku dengan sistem dasar yang dibangun dengan bahasa pemerograman HTML & CSS Dasar.",
+                  image: "projects/toko-buku-sederhana.png",
+                  tech: "HTML • CSS",
+                  code: "https://github.com/hananchaliq/flexhan-Toko-buku",
+                  live: "#",
+                  percent: ["60%", "40%"],
+               },
+               {
+                  title: "Portof FlexHan",
+                  desc: "Website portofolio sederhana dengan pemrograman html & css dasar dengan tampilan menu yang bersifat berubah.",
+                  image: "projects/flexhan.png",
+                  tech: "HTML • CSS",
+                  code: "https://github.com/hananchaliq/portofolio",
+                  live: "#",
+                  percent: ["65%", "35%"],
+               },
+               {
+                  title: "Kasir Halalood",
+                  desc: "Website Kasir digital dengan tampilan yang dashboard yang lengkap dan cakep, dibangun dengan dasar php yang kuat",
+                  image: "projects/kasir-halalood.png",
+                  tech: "PHP Native • HTML • CSS",
+                  code: "https://github.com/hananchaliq/project-akhir-crocodic-basic",
+                  live: "#",
+                  percent: ["30%", "40%", "30%"],
+               },
+            ];
+
+            let currentIndex = 0;
+
+            function render() {
+               const main = projects[currentIndex];
+               const mainView = document.getElementById("main-project-view");
+
+               // 1. Reset Animasi: Hapus class dulu
+               mainView.classList.remove("project-entrance");
+
+               // 2. Trik Void: Memaksa browser me-restart flow CSS
+               void mainView.offsetWidth;
+
+               // 3. Update Data Konten
+               document.getElementById("main-title").innerText = main.title;
+               document.getElementById("main-desc").innerText = main.desc;
+               document.getElementById("main-img").src = main.image;
+               document.getElementById("main-tech-list").innerText = main.tech;
+
+               // Update bar progress github-style
+               document.getElementById("tech-bar-1").style.width = main.percent[0];
+               document.getElementById("tech-bar-2").style.width = main.percent[1];
+               document.getElementById("tech-bar-3").style.width = main.percent[2];
+
+               // 4. Pasang kembali class animasi
+               mainView.classList.add("project-entrance");
+
+               // Update List Katalog Sebelah Kanan
+               const listContainer = document.getElementById("project-list");
+               listContainer.innerHTML = "";
+
+               projects.forEach((proj, index) => {
+                  if (index === currentIndex) return;
+
+                  const item = `
+        <div onclick="selectProject(${index})" class="group p-4 border border-zinc-800 bg-zinc-900 rounded-lg hover:border-zinc-400 transition-all cursor-pointer overflow-hidden list-entrance">
+          <div class="flex gap-4 items-center">
+            <img src="${proj.image}" class="w-20 h-14 object-cover rounded border border-zinc-800 group-hover:scale-105 transition-transform grayscale opacity-90">
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-bold text-white uppercase truncate">${proj.title}</h4>
+              <p class="text-[10px] text-zinc-500 line-clamp-1 mt-1">${proj.desc}</p>
+            </div>
+          </div>
+        </div>
+      `;
+                  listContainer.innerHTML += item;
+               });
+            }
+
+            function selectProject(index) {
+               currentIndex = index;
+               render();
+            }
+
+            function nextProject() {
+               currentIndex = (currentIndex + 1) % projects.length;
+               render();
+            }
+
+            function prevProject() {
+               currentIndex = (currentIndex - 1 + projects.length) % projects.length;
+               render();
+            }
+
+            // Jalankan saat pertama kali load
+            render();
+
+            const fade_right = document.querySelectorAll(".fade-right");
+
+            const observer_right = new IntersectionObserver(
+               entries => {
+                  entries.forEach(entry => {
+                     if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                     } else {
+                        entry.target.classList.remove("show"); // biar bisa animasi ulang
+                     }
+                  });
+               },
+               {
+                  threshold: 0.3,
+               }
+            );
+
+            fade_right.forEach(section => {
+               observer_right.observe(section);
+            });
+            const fade_left = document.querySelectorAll(".fade-left");
+
+            const observer_left = new IntersectionObserver(
+               entries => {
+                  entries.forEach(entry => {
+                     if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                     } else {
+                        entry.target.classList.remove("show"); // biar bisa animasi ulang
+                     }
+                  });
+               },
+               {
+                  threshold: 0.3,
+               }
+            );
+
+            fade_left.forEach(section => {
+               observer_left.observe(section);
+            });
+
+            const fade_top = document.querySelectorAll(".fade-top");
+
+            const observer_top = new IntersectionObserver(
+               entries => {
+                  entries.forEach(entry => {
+                     if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                     } else {
+                        entry.target.classList.remove("show"); // biar bisa animasi ulang
+                     }
+                  });
+               },
+               {
+                  threshold: 0.3,
+               }
+            );
+
+            fade_top.forEach(section => {
+               observer_top.observe(section);
+            });
+            const fade_bot = document.querySelectorAll(".fade-bot");
+
+            const observer_bot = new IntersectionObserver(
+               entries => {
+                  entries.forEach(entry => {
+                     if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                     } else {
+                        entry.target.classList.remove("show"); // biar bisa animasi ulang
+                     }
+                  });
+               },
+               {
+                  threshold: 0.3,
+               }
+            );
+
+            fade_bot.forEach(section => {
+               observer_bot.observe(section);
+            });
+
+            const light = document.querySelector(".light");
+
+            window.addEventListener("mousemove", e => {
+               light.style.setProperty("--x", e.clientX + "px");
+               light.style.setProperty("--y", e.clientY + "px");
+            });
+         </script>
+      </main>
+      <footer class="relative text-white overflow-hidden border-t bg-zinc-950/50 z-10 border-white/10">
+
+         <div class="max-w-6xl mx-auto px-6 py-16 relative z-10">
+            <!-- TOP -->
+            <div class="flex flex-col md:flex-row md:justify-between gap-12">
+               <!-- IDENTITY -->
+               <div class="space-y-5 max-w-md">
+                  <h2 class="text-2xl md:text-3xl font-bold tracking-tight">HANAN NRC</h2>
+
+                  <p class="text-sm text-zinc-400 leading-relaxed">Dibangun dengan pendekatan pengembangan sistem yang efisien, terstruktur, dan berbasis logika pengembang. Setiap proses dibantu oleh kecerdasan buatan untuk mempercepat implementasi tanpa mengurangi kualitas hasil.</p>
+
+                  <p class="text-[10px] tracking-[0.3em] uppercase text-zinc-600">DEVELOPER - MAKN ENDE</p>
+               </div>
+
+               <!-- NAV MENU -->
+               <div class="grid grid-cols-2 gap-x-10 gap-y-4 text-sm">
+                  <a href="#awal" class="text-zinc-500 hover:text-white transition">Awal</a>
+                  <a href="#siapa-saya" class="text-zinc-500 hover:text-white transition">Siapa Saya</a>
+                  <a href="#jejak-saya" class="text-zinc-500 hover:text-white transition">Jejak Saya</a>
+                  <a href="#senjata" class="text-zinc-500 hover:text-white transition">Senjata Utama</a>
+                  <a href="#ruang-karya" class="text-zinc-500 hover:text-white transition">Karya Saya</a>
+                  <a href="#hubungi-saya" class="text-zinc-500 hover:text-white transition">Terhubung dengan Saya</a>
+               </div>
+            </div>
+
+            <!-- DIVIDER -->
+            <div class="my-10 h-px bg-white/10"></div>
+
+            <!-- BOTTOM LINE -->
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+               <p class="text-[10px] tracking-[0.3em] text-zinc-600 uppercase">© 2026 HANAN NURDIN RAMADHAN CHALIQ</p>
+
+               <p class="text-xs text-zinc-500 italic">Built with AI-led execution & developer-directed structured thinking.</p>
+            </div>
+         </div>
+      </footer>
+   </body>
+</html>
