@@ -771,9 +771,9 @@
 
                            <!-- BUTTONS -->
                            <div class="flex gap-4 pt-4">
-                              <a id="main-link-code" href="#" class="flex-1 text-center border border-zinc-700 text-zinc-300 py-3 hover:bg-zinc-800 transition-all text-xs uppercase tracking-widest font-bold"> Source Code </a>
+                              <a id="main-link-code" href="#" target="_blank" class="flex-1 text-center border border-zinc-700 text-zinc-300 py-3 hover:bg-zinc-800 transition-all text-xs uppercase tracking-widest font-bold"> Source Code </a>
 
-                              <a id="main-link-live" href="#" class="flex-1 text-center bg-white text-black py-3 hover:bg-zinc-200 transition-all text-xs uppercase tracking-widest font-bold"> Live Demo </a>
+                              <a id="main-link-live" href="#" target="_blank" class="flex-1 text-center bg-white text-black py-3 hover:bg-zinc-200 transition-all text-xs uppercase tracking-widest font-bold"> Live Demo </a>
                            </div>
                         </div>
                      </div>
@@ -1117,6 +1117,8 @@
                document.getElementById("main-desc").innerText = main.desc;
                document.getElementById("main-img").src = main.image;
                document.getElementById("main-tech-list").innerText = main.tech;
+               document.getElementById("main-link-code").href = main.code;
+               document.getElementById("main-link-live").href = main.live;
 
                // Update bar progress github-style
                document.getElementById("tech-bar-1").style.width = main.percent[0];
